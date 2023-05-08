@@ -86,9 +86,10 @@ def run_simulation(debug: False):
     global population_scores
     count = 0
 
-    for boxArray in population:
+    for i in population_scores:
         fitness = 0
         totalWeight = 0
+        boxArray = i["solution"]
 
         for index, boxBit in enumerate(boxArray):
             boxWeight = boxes[index]['weight']
@@ -168,15 +169,17 @@ def mutation(new_generation):
     chance = random.randint(0, 100)
 
     if chance <= mutation_rate:
-        print("mutated...")
         mutate_index = random.randint(0, 7)
+        current = new_generation[mutate_index].copy()
         bit_index = random.randint(0, 3)
-        currentBit = new_generation[mutate_index][bit_index]
+        currentBit = current[bit_index]
 
         if currentBit == 0:
-            new_generation[mutate_index][bit_index] = 1
+            current[bit_index] = 1
         else:
-            new_generation[mutate_index][bit_index] = 0
+            current[bit_index] = 0
+
+        new_generation[mutate_index] = current
 
     return new_generation
 
@@ -244,7 +247,6 @@ def simulation_loop(debug: False):
     generations = 10000
     count = 1
     while generations > 0:
-        find_best_solution()
         if debug:
             print("________________________________________")
             print(f"\n\nGeneration: {count} \n\n")
@@ -253,10 +255,10 @@ def simulation_loop(debug: False):
         count += 1
         new_generation = generation_creation()
         reset_population_scores(new_generation)
-        # TODO reset the scores before running next generation...
+    print_best_solution()
 
 
-def find_best_solution():
+def print_best_solution():
     print(f"Best solution: {bestSolution}")
 
 
